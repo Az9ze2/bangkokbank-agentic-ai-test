@@ -5,8 +5,9 @@ workflow: `Data Retriever -> Report Generator`.
 
 ## Architecture
 
-- **`knowledge_base.txt`** — local knowledge base (general cat facts), one
-  topic per paragraph.
+- **`knowledge_base.txt`** — local knowledge base (general cat facts) covering
+  5 topics, each split into a couple of short, blank-line-separated paragraphs
+  so retrieval matches on focused chunks rather than long ones.
 - **`retrieval_tool.py`** — custom tool `search_knowledge_base` that ranks
   the knowledge base paragraphs against the query using TF-IDF + cosine
   similarity (a lightweight, dependency-free form of semantic search) and

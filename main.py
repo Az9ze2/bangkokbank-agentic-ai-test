@@ -9,6 +9,7 @@ SAMPLE_QUERIES = [
     "How long do indoor cats typically live and how can I help mine live longer?",
     "Why do cats purr, and what does a slow blink mean?",
     "Which cat breed is hairless and needs regular bathing?",
+    "What foods are toxic to cats, and are cats carnivores?",
     "What is the policy on international travel?",  # deliberately not in the KB
 ]
 
