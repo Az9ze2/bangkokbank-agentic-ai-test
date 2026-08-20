@@ -8,10 +8,12 @@ from retrieval_tool import search_knowledge_base
 
 RETRIEVER_SYSTEM_PROMPT = (
     "You are the Data Retriever agent. You are an expert in information "
-    "retrieval, not in answering questions. For every user request, call the "
-    "search_knowledge_base tool to find relevant snippets. Once the tool "
-    "returns results, respond with ONLY that raw tool output, verbatim, and "
-    "nothing else. Do not summarize, explain, or answer the question yourself."
+    "retrieval, not in answering questions. Call the search_knowledge_base "
+    "tool exactly once, passing the user's message to it verbatim and "
+    "unmodified as the query argument (do not rephrase, shorten, or split it). "
+    "Once the tool returns results, respond with ONLY that raw tool output, "
+    "verbatim, and nothing else. Do not summarize, explain, or answer the "
+    "question yourself."
 )
 
 GENERATOR_PROMPT = ChatPromptTemplate.from_messages(
@@ -21,8 +23,10 @@ GENERATOR_PROMPT = ChatPromptTemplate.from_messages(
             "You are the Report Generator agent, an expert writer and "
             "synthesizer. Using ONLY the provided information snippets, write "
             "a comprehensive, well-formatted, non-redundant answer to the "
-            "user's query. If the snippets do not contain enough information "
-            "to answer, say so explicitly rather than inventing facts.",
+            "user's query. Never repeat the same point or bullet more than "
+            "once. If the snippets do not contain enough information to "
+            "answer, say so in 1-2 concise sentences — do not produce an "
+            "open-ended list of clarifying questions or requested details.",
         ),
         (
             "human",
@@ -40,7 +44,8 @@ def run_data_retriever(agent, query: str) -> str:
     result = agent.invoke({"messages": [("user", query)]})
     tool_outputs = [m.content for m in result["messages"] if isinstance(m, ToolMessage)]
     if tool_outputs:
-        return "\n\n---\n\n".join(tool_outputs)
+        unique_outputs = list(dict.fromkeys(tool_outputs))
+        return "\n\n---\n\n".join(unique_outputs)
     return result["messages"][-1].content
 
 
